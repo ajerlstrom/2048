@@ -67,7 +67,7 @@ void GameBoard::Move(char direction){
     game_status = GameBoard::GameStatus();
 }
 
-void GameBoard::MoveUp(){ 
+bool GameBoard::MoveUp(){ 
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1);//empty board, will end up replacing the current Game Board
     std::vector<std::tuple<int, int>> combined_tiles; //TODO: add tiles that have been combined - fixes chain combination
@@ -102,9 +102,10 @@ void GameBoard::MoveUp(){
         }
     }
     board = temporary_board;
+    return true;
 }
 
-void GameBoard::MoveDown(){
+bool GameBoard::MoveDown(){
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1); //empty board, will end up replacing the current Game Board
 
@@ -140,9 +141,10 @@ void GameBoard::MoveDown(){
         }
     }
     board = temporary_board;
+    return true;
 }
 
-void GameBoard::MoveLeft(){
+bool GameBoard::MoveLeft(){
 std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1);
     int x, y, value;
@@ -177,9 +179,10 @@ std::vector<int> v1(board_size_x, 0);
         }
     }
     board = temporary_board;
+    return true;
 }
 
-void GameBoard::MoveRight(){
+bool GameBoard::MoveRight(){
     //we have to loop backwards
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1); //empty board, will end up replacing the current Game Board
@@ -215,6 +218,7 @@ void GameBoard::MoveRight(){
         }
     }
     board = temporary_board;
+    return true;
 }
 
 // Retrieves the coordinates of all tiles with a value != 0

@@ -19,9 +19,9 @@ class GameBoard{
         void GenerateRandomCoordinates(int &x, int &y);
         void GetNonZeroTiles();
         void Move(char direction);
-        void MoveUp();
-        void MoveDown();
-        void MoveLeft();
-        void MoveRight();
+        bool MoveUp();
+        bool MoveDown();
+        bool MoveLeft();
+        bool MoveRight();
         std::tuple<bool, std::string> GameStatus();   
 };
