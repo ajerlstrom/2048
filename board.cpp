@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "board.h"
 #include <ctime>
+
+#include "board.h"
 
 int random;
 int x_coord, y_coord; //used for coordinate generation for new '2' tile to be added
@@ -46,34 +47,39 @@ void GameBoard::PlaceNewTile(){
 }
 
 void GameBoard::Move(char direction){
+    bool has_moved = false;
     GetNonZeroTiles();
     switch(direction){
         case('w'):
-            MoveUp();
+            has_moved = MoveUp();
             break;
         case('s'):
-            MoveDown();
+            has_moved = MoveDown();
             break;
         case('d'):
-            MoveRight();
+            has_moved = MoveRight();
             break;
         case('a'):
-            MoveLeft();
+            has_moved = MoveLeft();
             break;
         default:
             std::cout << "This was not a valid move, please use 'w', 'a', 's' or 'd'" << std::endl;
     }
-    GameBoard::PlaceNewTile();
+
+    if(has_moved){
+        GameBoard::PlaceNewTile();
+    } 
     game_status = GameBoard::GameStatus();
+    
 }
 
 bool GameBoard::MoveUp(){ 
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1);//empty board, will end up replacing the current Game Board
-    std::vector<std::tuple<int, int>> combined_tiles; //TODO: add tiles that have been combined - fixes chain combination
-    bool is_move_possible = false; //TODO: return this value, if false, no move was made & prompt for new attempt
+
     int x, y, value;
-    bool has_been_placed;
+    bool has_been_placed; // used to determine if the tile has been placed
+    bool has_moved = false; // becomes true if a tile has been moved, is returned at the end
 
     for(std::tuple<int,int,int> coord : non_zero_tiles){//go through all non-zero tiles
         x = std::get<0>(coord);
@@ -91,9 +97,11 @@ bool GameBoard::MoveUp(){
             else if (temporary_board[row][y] != 0 && temporary_board[row][y] == value){ // combination of 2 tiles
                 temporary_board[row][y] = value*2;
                 has_been_placed = true;
+                has_moved = true;
             } else if(temporary_board[row][y] == 0){ // move to empty tile
                 temporary_board[row][y] = value;   
                 has_been_placed = true;
+                has_moved = true;
             }
         }
 
@@ -101,8 +109,9 @@ bool GameBoard::MoveUp(){
             temporary_board[x][y] = value; //keep the tile on its original place
         }
     }
+
     board = temporary_board;
-    return true;
+    return has_moved;
 }
 
 bool GameBoard::MoveDown(){
@@ -111,6 +120,7 @@ bool GameBoard::MoveDown(){
 
     int x, y, value;
     bool has_been_placed;
+    bool has_moved = false; // becomes true if a tile has been moved, is returned at the end
    
     for(auto coord = non_zero_tiles.rbegin(); coord != non_zero_tiles.rend(); ++coord){  //we have to loop backwards
 
@@ -124,15 +134,17 @@ bool GameBoard::MoveDown(){
             has_been_placed = true;
         }
 
-        for(int row = board_size_x - 1; row > 0; row--){
+        for(int row = board_size_x - 1; row > x; row--){
 
             if(has_been_placed) break;
             else if (temporary_board[row][y] != 0 && temporary_board[row][y] == value){ // combination of tiles
                 temporary_board[row][y] = value*2;
-                has_been_placed = true;
+                has_been_placed = true; 
+                has_moved = true;
             } else if(temporary_board[row][y] == 0){ // move to empty tile
                 temporary_board[row][y] = value;
-                has_been_placed = true;
+                has_been_placed = true; 
+                has_moved = true;
             }
         }
 
@@ -141,14 +153,16 @@ bool GameBoard::MoveDown(){
         }
     }
     board = temporary_board;
-    return true;
+    return has_moved;
 }
 
 bool GameBoard::MoveLeft(){
-std::vector<int> v1(board_size_x, 0);
+    std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1);
+
     int x, y, value;
     bool has_been_placed;
+    bool has_moved = false; // becomes true if a tile has been moved, is returned at the end
 
     for(std::tuple<int,int,int> coord : non_zero_tiles){
 
@@ -168,9 +182,12 @@ std::vector<int> v1(board_size_x, 0);
             else if (temporary_board[x][col] != 0 && temporary_board[x][col] == value){ //combine with existing
                 temporary_board[x][col] = value*2;
                 has_been_placed = true;
+                has_moved = true;
+                
             } else if(temporary_board[x][col] == 0){ //move to empty
                 temporary_board[x][col] = value;
                 has_been_placed = true;
+                has_moved = true;
             }
         }
 
@@ -179,18 +196,19 @@ std::vector<int> v1(board_size_x, 0);
         }
     }
     board = temporary_board;
-    return true;
+    return has_moved;
 }
 
 bool GameBoard::MoveRight(){
     //we have to loop backwards
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(board_size_y, v1); //empty board, will end up replacing the current Game Board
+
     int x, y, value;
     bool has_been_placed;
+    bool has_moved = false; // becomes true if a tile has been moved, is returned at the end
    
     for(auto coord = non_zero_tiles.rbegin(); coord != non_zero_tiles.rend(); ++coord){  //we have to loop backwards
-
         x = std::get<0>(*coord);
         y = std::get<1>(*coord);
         value = std::get<2>(*coord);
@@ -201,15 +219,17 @@ bool GameBoard::MoveRight(){
             has_been_placed = true;
         }
 
-        for(int col = board_size_y - 1; col > 0; col--){
+        for(int col = board_size_y - 1; col > y; col--){
 
             if(has_been_placed) break;
             else if (temporary_board[x][col] != 0 && temporary_board[x][col] == value){ // combination of tiles
                 temporary_board[x][col] = value*2;
                 has_been_placed = true;
+                has_moved = true;
             } else if(temporary_board[x][col] == 0){ // move to empty tile
                 temporary_board[x][col] = value;
                 has_been_placed = true;
+                has_moved = true;
             }
         }
 
@@ -218,7 +238,7 @@ bool GameBoard::MoveRight(){
         }
     }
     board = temporary_board;
-    return true;
+    return has_moved;
 }
 
 // Retrieves the coordinates of all tiles with a value != 0
