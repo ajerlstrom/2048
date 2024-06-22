@@ -153,7 +153,7 @@ bool GameBoard::MoveDown(){ // TODO solve issue with tiles switching position
 }
 
 
-bool GameBoard::MoveLeft(){ // TODO solve issue with tiles switching position
+bool GameBoard::MoveLeft(){ // TODO solve issue with tiles switching position in rare setup
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(this->board_size_y, v1); // empty board, will be populated with new tile locations
 
