@@ -7,11 +7,6 @@
 int random;
 int x_coord, y_coord; //used for coordinate generation for new '2' tile to be added
 
-/** 
- * Initializes the game board & the random seed
- * 
- * @param size the size of the game board
-*/
 GameBoard::GameBoard(int size) : board_size_x(size), board_size_y(size), board_size_total(size*size){
     std::srand(std::time(nullptr));
     std::vector<int> v1(this->board_size_x, 0);
@@ -19,9 +14,6 @@ GameBoard::GameBoard(int size) : board_size_x(size), board_size_y(size), board_s
     this->board = v2;
 }
 
-/**
- * Prints the Game Board to the terminal
- */
 void GameBoard::PrintBoard(){
     for(int i = 0; i < this->board_size_y; i++){
         for(int j = 0; j < this->board_size_x; j++){
@@ -33,9 +25,7 @@ void GameBoard::PrintBoard(){
     std::cout << "-------------------------------------" << std::endl;
 }
 
-/**
- * Starts the game by placing 2 numbers on 2 free tiles on the board
- */
+
 void GameBoard::StartGame(){
     this->GenerateRandomCoordinates(x_coord, y_coord);
     this->board[x_coord][y_coord] = 2;
@@ -43,9 +33,6 @@ void GameBoard::StartGame(){
     this->board[x_coord][y_coord] = 2;
 }
 
-/**
- * Places a new tile of value "2" in a free slot on the board
- */
 void GameBoard::PlaceNewTile(){
     this->GenerateRandomCoordinates(x_coord, y_coord);
 
@@ -55,11 +42,6 @@ void GameBoard::PlaceNewTile(){
     this->board[x_coord][y_coord] = 2;
 }
 
-/**
- * "Main" move method, depending on the user input will call on the corresponding 
- * MoveUp, MoveDown, MoveLeft or MoveRight method.
- * @param direction the direction the user wishes to move using 'w', 'a', 's' or 'd'
- */
 void GameBoard::Move(char direction){
     bool has_moved = false; // used to determine if any tiles were moved
     GetNonZeroTiles(); // fetch all non-zero tiles
@@ -87,10 +69,6 @@ void GameBoard::Move(char direction){
     
 }
 
-/**
- * Moves all tiles on the board "up"
- * @return true if any tile was moved, false if all tiles stayed on the same position
- */
 bool GameBoard::MoveUp(){ 
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(this->board_size_y, v1); // empty board, will be populated with new tile locations
@@ -132,10 +110,7 @@ bool GameBoard::MoveUp(){
     return has_moved;
 }
 
-/**
- * Moves all tiles on the board "down"
- * @return true if any tile was moved, false if all tiles stayed on the same position
- */
+
 bool GameBoard::MoveDown(){ // TODO solve issue with tiles switching position
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(this->board_size_y, v1); // empty board, will be populated with new tile locations
@@ -177,10 +152,7 @@ bool GameBoard::MoveDown(){ // TODO solve issue with tiles switching position
     return has_moved;
 }
 
-/**
- * Moves all tiles on the board "left"
- * @return true if any tile was moved, false if all tiles stayed on the same position
- */
+
 bool GameBoard::MoveLeft(){ // TODO solve issue with tiles switching position
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(this->board_size_y, v1); // empty board, will be populated with new tile locations
@@ -223,10 +195,6 @@ bool GameBoard::MoveLeft(){ // TODO solve issue with tiles switching position
     return has_moved;
 }
 
-/**
- * Moves all tiles on the board "right"
- * @return true if any tile was moved, false if all tiles stayed on the same position
- */
 bool GameBoard::MoveRight(){ 
     std::vector<int> v1(board_size_x, 0);
     std::vector<std::vector<int>> temporary_board(this->board_size_y, v1); // empty board, will be populated with new tile locations
@@ -268,11 +236,6 @@ bool GameBoard::MoveRight(){
     return has_moved;
 }
 
-/**
- * Retrieves coordinates of all tiles with a value != 0.
- * It is used to update non_zero_tiles variable. These values are collected from "top" to "bottom",
- * "left" to "right". This characteristic is what the different Move methods were created around.
- */
 void GameBoard::GetNonZeroTiles(){
     std::tuple<int,int,int> coordinate;
     this->non_zero_tiles.clear();
@@ -289,10 +252,6 @@ void GameBoard::GetNonZeroTiles(){
     }
 }
 
-/**
- * Generates a pair of random coordinates within the range of the board
- * @param[out] x, y the coordinates that are generated
- */
 void GameBoard::GenerateRandomCoordinates(int &x, int &y){
     random = std::rand();
     x = random % this->board_size_x;
@@ -300,10 +259,6 @@ void GameBoard::GenerateRandomCoordinates(int &x, int &y){
     y = random % this->board_size_y;
 }
 
-/**
- * Get the games current status
- * @return a bool and string tuple, true if game over, false if not, string contains reason for Game Over, "" if not over
- */
 std::tuple<bool, std::string> GameBoard::GameStatus(){
     int max_val = 0;
     bool board_has_free_tile = false;
@@ -319,9 +274,6 @@ std::tuple<bool, std::string> GameBoard::GameStatus(){
     else return {true, "Something terribly wrong has happened in GameStatus(), cancelling the game"};
 }
 
-/**
- * Prints the "header" for the game, only used when first starting
- */
 void GameBoard::PrintHeader(){
     std::cout << "======================================" << std::endl;
     std::cout << "WELCOME TO THE GAME 2048" << std::endl;
