@@ -3,6 +3,7 @@
 
 class GameBoard{
     public:
+        //public because i dont wanna create getters/setters for this mini project
         const int board_size_x; // number of rows in the grid
         const int board_size_y; // number of columns in the grid
         const int board_size_total; // area of the board (in tiles)
